@@ -5,9 +5,13 @@ definePageMeta({
 
 const user = useUser()
 const postsStore = usePosts()
+const favoritesStore = useFavorites()
 
-// Fetch posts when the component is mounted
-await postsStore.fetchPosts()
+// Fetch posts and favorites when the component is mounted
+await Promise.all([
+  postsStore.fetchPosts(),
+  favoritesStore.fetchFavorites()
+])
 </script>
 
 <template>
