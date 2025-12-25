@@ -3,19 +3,22 @@ definePageMeta({
   middleware: ['validate-session']
 })
 
-const { $api } = useNuxtApp()
 const user = useUser()
+const postsStore = usePosts()
 
-const { data: posts } = await $api.get('posts')
+// Fetch posts when the component is mounted
+await postsStore.fetchPosts()
 </script>
 
 <template>
-  <PostForm
-    v-if="!user.isGuest" />
-  <div class="grid gap-16">
-    <PostItem
-      v-for="post in posts"
-      :key="post.id"
-      v-bind="{ post }" />
+  <PostForm v-if="!user.isGuest" />
+  <div v-if="postsStore.isLoading" class="text-center py-8">
+    Loading posts...
+  </div>
+  <div v-else class="grid gap-16">
+    <PostItem v-for="post in postsStore.posts" :key="post.id" v-bind="{ post }" />
+    <p v-if="postsStore.posts.length === 0" class="text-center text-gray-500">
+      No posts yet. Be the first to post!
+    </p>
   </div>
 </template>
