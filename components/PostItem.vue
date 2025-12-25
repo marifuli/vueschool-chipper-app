@@ -1,5 +1,6 @@
 <script setup>
 import { HeartIcon } from '@heroicons/vue/24/outline'
+import useHelpers from '../composables/useHelpers'
 
 const props = defineProps({
   post: {
@@ -21,8 +22,16 @@ const isFavoritePost = computed(() => {
   return favoritesStore.isPostFavorite(props.post.id)
 })
 
+function isLoggedIn() {
+  if(!user.data?.id) {
+    useHelpers().showErrorModal("Error", "Please login to follow or save to favorites!")
+    return false 
+  }
+  return true 
+}
+
 async function toggleFavoriteUser () {
-  if (isUserLoading.value) return
+  if (isUserLoading.value || !isLoggedIn()) return
 
   isUserLoading.value = true
   try {
@@ -38,7 +47,7 @@ async function toggleFavoriteUser () {
   }
 }
 async function toggleFavoritePost () {
-  if (isPostLoading.value) return
+  if (isPostLoading.value || !isLoggedIn()) return
 
   isPostLoading.value = true
   try {
