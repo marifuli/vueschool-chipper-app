@@ -3,7 +3,7 @@ import { pickBy } from 'lodash-es'
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig()
 
-  function request (method, url, params, headers) {
+  function request (method, url, params, headers, isFormData = false) {
     const tokenCookie = useCookie('jwt')
     const couponCookie = useCookie('coupon')
     const utmCookie = useCookie('utm')
@@ -16,7 +16,7 @@ export default defineNuxtPlugin(() => {
       headers: pickBy({
         ...headers,
         Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': isFormData ? undefined : 'application/json',
         Authorization: tokenCookie?.value ? `Bearer ${tokenCookie.value}` : null,
         'X-Coupon': couponCookie?.value,
         'X-UTM': JSON.stringify(toRaw(utmCookie?.value))
@@ -40,8 +40,8 @@ export default defineNuxtPlugin(() => {
     get (url, params = {}, headers = {}) {
       return request('GET', url, params, headers)
     },
-    post (url, params = {}, headers = {}) {
-      return request('POST', url, params, headers)
+    post (url, params = {}, headers = {}, isFormData = false) {
+      return request('POST', url, params, headers, isFormData)
     },
     patch (url, params = {}, headers = {}) {
       return request('PATCH', url, params, headers)

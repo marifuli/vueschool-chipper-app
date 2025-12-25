@@ -25,12 +25,13 @@ export const usePosts = defineStore('posts', () => {
     async function createPost (postData) {
         isLoading.value = true
         try {
-            const response = await $api.post('posts', postData)
+            // Check if postData is FormData (for image uploads)
+            const isFormData = postData instanceof FormData
+            const response = await $api.post('posts', postData, {}, isFormData)
             // Add the new post to the posts array
             posts.value.unshift(response.data)
             return response
         } catch (error) {
-            console.error('Error creating post:', error)
             throw error
         } finally {
             isLoading.value = false

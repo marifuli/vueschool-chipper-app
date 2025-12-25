@@ -22,12 +22,12 @@ const isFavoritePost = computed(() => {
   return favoritesStore.isPostFavorite(props.post.id)
 })
 
-function isLoggedIn() {
-  if(!user.data?.id) {
+function isLoggedIn () {
+  if (!user.data?.id) {
     useHelpers().showErrorModal("Error", "Please login to follow or save to favorites!")
-    return false 
+    return false
   }
-  return true 
+  return true
 }
 
 async function toggleFavoriteUser () {
@@ -70,25 +70,26 @@ async function toggleFavoritePost () {
       {{ post.title }}
     </h4>
     <div class="flex justify-between bg-gray-100 p-4 rounded-lg">
-      <div >
+      <div>
         by <strong>{{ post.user.name }}</strong>
       </div>
-      <button v-if="post.user.id !== user.data?.id" 
-        @click="toggleFavoriteUser" :disabled="isUserLoading" 
-        :class="[
-          'font-medium text-sm px-2 rounded-full',
-          isFavoriteUser ? 'bg-green-200' : 'bg-blue-200',
-          isUserLoading ? 'opacity-50' : ''
-        ]"
-      >
+      <button v-if="post.user.id !== user.data?.id" @click="toggleFavoriteUser" :disabled="isUserLoading" :class="[
+        'font-medium text-sm px-2 rounded-full',
+        isFavoriteUser ? 'bg-green-200' : 'bg-blue-200',
+        isUserLoading ? 'opacity-50' : ''
+      ]">
         {{ isUserLoading ? 'Loading...' : (isFavoriteUser ? 'Unfollow' : 'Follow') }}
       </button>
+    </div>
+    <!-- Display image if available -->
+    <div v-if="post.image_url" class="mt-3 mb-3">
+      <img :src="post.image_url" :alt="post.title || 'Post image'" class="max-w-full rounded-lg max-h-96 object-contain">
     </div>
     <p>
       {{ post.body }}
     </p>
-    <button @click="toggleFavoritePost" :disabled="isPostLoading" class="flex items-center justify-center gap-2 p-4 rounded-lg"
-      :class="[
+    <button @click="toggleFavoritePost" :disabled="isPostLoading"
+      class="flex items-center justify-center gap-2 p-4 rounded-lg" :class="[
         isFavoritePost ? 'bg-red-300 text-red-600' : 'bg-red-200 text-red-500',
         isPostLoading ? 'opacity-50' : ''
       ]">
